@@ -27,8 +27,8 @@ const Home = () => {
     }
   )
 
-  const onIntersect = ([entry]) => entry.isIntersecting && fetchNextPage();
-  
+  const onIntersect = ([entry]) => isFetching && entry.isIntersecting && fetchNextPage();
+
   useObserver({
     target: targetRef,
     onIntersect

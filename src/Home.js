@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useRef } from "react";
 import { QueryClient, QueryClientProvider, useQuery, useInfiniteQuery, notifyManager } from "react-query";
 import { ReactQueryDevtools } from 'react-query/devtools';
 import styled from 'styled-components';
 import axios from "axios";
+import { useObserver, useInfiniteScroll } from './utils/utils';
 
 
 const Home = () => {
-
+  const targetRef = useRef(null);
   const getPokeList = ({ pageParam = OFFSET }) => axios.get('https://pokeapi.co/api/v2/pokemon', { params:{ limit: OFFSET, offset: pageParam }}).then(res => res?.data); 
   // const { data, isLoading, isError } = useQuery(['poke', 1], getPokeList, { keepPreviousData: true })
   // console.log(data);
@@ -25,7 +26,14 @@ const Home = () => {
       }
     }
   )
-  console.log(data);
+
+  const onIntersect = ([entry]) => entry.isIntersecting && fetchNextPage();
+  
+  useObserver({
+    target: targetRef,
+    onIntersect
+  })
+
   return (
     <Container>
       {
@@ -47,7 +55,7 @@ const Home = () => {
           </PokeContainer>
         ))
       }
-      <button 
+      {/* <button 
         onClick={() => fetchNextPage()}
         style={{
           marginTop: '1rem',
@@ -61,10 +69,11 @@ const Home = () => {
         }}
       >
           More Data
-      </button>
+      </button> */}
       {
         isFetchingNextPage && <p>Load More...</p>
       }
+      <div ref={targetRef}/>
     </Container>
   )
 }
@@ -85,8 +94,10 @@ const PokeContainer = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   width: 60%;
-  & + & {
-    margin-bottom: 2rem;
+  margin: 10px 0;
+
+  & > div:first-child {
+    background-color: #ddd;
   }
 `
 
@@ -96,5 +107,7 @@ const PokeDiv = styled.div`
   border-radius: 5px;
   box-shadow: 0 0 5px rgba(0, 0, 0, .4);
   /* border: 5px dashed red; */
-  
+  &:hover {
+    transform: scale(1.01);
+  }
 `

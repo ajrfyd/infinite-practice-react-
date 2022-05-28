@@ -4,6 +4,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import styled from 'styled-components';
 import axios from "axios";
 import { useObserver, useInfiniteScroll } from './utils/utils';
+import Card from "./components/Card";
 
 
 const Home = () => {
@@ -45,13 +46,21 @@ const Home = () => {
       {
         status === 'success' && data.pages.map((poke, idx) => (
           <PokeContainer key={idx}>
-            {poke.results.map(pok => (
+            {/* {poke.results.map(pok => (
               <PokeDiv key={pok.name}>
                 <p>
                   {pok.name}
                 </p>
               </PokeDiv>
-            ))}
+            ))} */}
+            {poke.results.map(pok => {
+              const { name, url } = pok;
+              const id = url.split('/')[6];
+              return (
+                <Card key={name} id={id} name={name}/>
+                )
+              }
+            )}
           </PokeContainer>
         ))
       }

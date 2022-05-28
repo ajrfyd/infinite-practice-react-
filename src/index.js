@@ -6,5 +6,5 @@ import './App.css';
 const root = document.querySelector('#root');
 
 ReactDom.createRoot(root).render(
-  <App />
+    <App />
 )

@@ -32,9 +32,9 @@
   export const useObserver = ({
       target,
       onIntersect, // 타겟이 감지되면 실행할 callback 함수
-      root = null, // 교차할 부모 요소, 아무것도 넘기지 않으면 document가 기본이다.
-      rootMargin = "0px", // root와 target이 감지하는 여백의 거리
-      threshold = 1.0, // 임계점. 1.0이면 root내에서 target이 100% 보여질 때 callback이 실행된다.
+      root = null, // 타겟의 가시성을 확인할 때 사용. 타겟 상위 요소, 즉 조상 요소. 설정하지 않거나 root 값을 null 로 주었을 때 기본 값으로 브라우저 뷰포트가 설정.
+      rootMargin = "0px", // root의 범위를 확장할 수 있다.
+      threshold = 1.0, // 어느 정도 타겟 요소가 보여 졌는지에 따라 콜백을 실행. 1.0 = 타겟이 100%다 보여 졌을때. 0.5 = 타겟이 반절 보여 졌을때
   }) => {
       useEffect(() => {
           let observer
@@ -53,3 +53,12 @@
   }
 ```
 
+```js
+  // 타겟과 루트가 전혀 교차하지 않았음에도 호출 되는 것은 Intersection Observer의 기본동작. 이를 예외처리 하기 위해서 intersectionRatio를 사용하거나 아래의 방법 사용.
+ const onIntersect = (entries, observer) => {
+    // isFetching && entries[0].isIntersecting && fetchNextPage();
+    // if (entry.intersectionRatio <= 0) return
+    if(!entries[0].isIntersecting) return
+    entries[0].isIntersecting && fetchNextPage();
+  }
+```

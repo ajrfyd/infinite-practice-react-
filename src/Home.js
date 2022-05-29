@@ -28,7 +28,11 @@ const Home = () => {
     }
   )
 
-  const onIntersect = ([entry]) => isFetching && entry.isIntersecting && fetchNextPage();
+  const onIntersect = (entries, observer) => {
+    // isFetching && entries[0].isIntersecting && fetchNextPage();
+    if(!entries[0].isIntersecting) return
+    entries[0].isIntersecting && fetchNextPage();
+  }
 
   useObserver({
     target: targetRef,
@@ -82,7 +86,7 @@ const Home = () => {
       {
         isFetchingNextPage && <p>Load More...</p>
       }
-      <div ref={targetRef}/>
+      <div ref={targetRef} style={{ border: '2px solid red', width: '100%', height: '500px' }}/>
     </Container>
   )
 }
